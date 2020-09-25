@@ -199,6 +199,17 @@ class Game:
                 print("Oops! Don't choose yourself! Try again.\n")
         print()
 
+        # adds to the queue of moves played and displays actions to user
+        mes = p.getName() + " played a Guard against " + self.players[target].getName() + ". "
+        
+        # Handmaid nulls card effect
+        # doesn't require player to guess
+        if self.players[target].getHandmaid() == True: 
+            print("Due to the handmaid nothing happens.\n")
+            mes += "Due to the handmaid nothing happened."
+            r.addQ(mes)
+            return
+            
         # shows user trash pile and list of guessing options
         r.displayTrash()
         print("Guessing options\n8: Princess(1)\n7: Countess(1)\n6: King(1)\n5: Prince(2)\n4: Handmaid(2)\n3: Baron(2)\n2: Priest(2)")
@@ -216,23 +227,19 @@ class Game:
                 print("Oops! The number is out of bounds. Try again.\n")
         print()
 
-        # adds to the queue of moves played and displays actions to user
-        mes = p.getName() + " played a Guard against " + self.players[target].getName() + ". "
-        # Handmaid nulls card effect
-        if self.players[target].getHandmaid() == True: 
-            print("Due to the handmaid nothing happens.\n")
-            mes += "Due to the handmaid nothing happened."
+        # dictionary for guesses
+        dic = {2: 'Priest', 3: 'Baron', 4: 'Handmaid', 5: 'Prince', 6: 'King', 7: 'Countess', 8: 'Princess'}
+        
+        # correct guess -> target knocked out
+        if self.players[target].getHand().getCard(0).getRank() == guess: 
+            print("You guessed correctly! " + self.players[target].getName() + " is out of the round.\n")
+            r.addTrash(self.players[target].getHand().getCard(0).getName())
+            self.players[target].setStatus(False)
+            mes += (self.players[target].getName() + " is out of the round.")
+        # incorrect guess -> nothing happens
         else:
-            # correct guess -> target knocked out
-            if self.players[target].getHand().getCard(0).getRank() == guess: 
-                print("You guessed correctly! " + self.players[target].getName() + " is out of the round.\n")
-                r.addTrash(self.players[target].getHand().getCard(0).getName())
-                self.players[target].setStatus(False)
-                mes += (self.players[target].getName() + " is out of the round.")
-            # incorrect guess -> nothing happens
-            else:
-                print("Sorry wrong guess. Better luck next time.\n")
-                mes += "Nothing happened."
+            print("Sorry wrong guess. Better luck next time.\n")
+            mes += p.getName() + " guessed a " + dic[guess] + ". Nothing happened."
         r.addQ(mes)
 
     def playPriest(self, p: player, r: gameround):
