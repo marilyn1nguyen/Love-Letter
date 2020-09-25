@@ -104,7 +104,7 @@ def main():
                                 input("Press enter to continue\n")
                                 break
                     
-        
+    print("\nGoodbye.")        
         
 if __name__ == "__main__":
     main()
